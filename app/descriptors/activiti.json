@@ -1,0 +1,53 @@
+{
+    "name": "activiti",
+    "prefix": "activiti",
+    "uri": "http://activiti",
+    "xml": {
+      "tagAlias": "lowerCase"
+    },
+    "associations": [],
+    "types": [
+      {
+        "name": "ActivitiServiceTask",
+        "extends": [
+          "bpmn:ServiceTask"
+        ],
+        "properties": [
+          {
+            "name": "delegateExpression",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "ActivitiExclusiveGateway",
+        "extends": [
+          "bpmn:ExclusiveGateway"
+        ],
+        "properties": [
+          {
+            "name": "executionListener",
+            "isAttr": false,
+            "type": "String"
+          }
+        ]        
+      },
+      {
+        "name": "exectionListener",
+        "superClass": [ "Element" ],
+        "isMany": true,
+        "properties": [
+          {
+            "name": "event",
+            "isAttr":true,
+            "type": "String"
+          },{
+            "name": "delegateExpression",
+            "isAttr": true,
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  }
