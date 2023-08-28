@@ -26,27 +26,27 @@ function createElement(elementType, properties, parent, factory) {
 export default function ExtensionExectionListenerGroup({ element, injector }) {
 
     // 防空
-    const exectionListeners = getExtensionExectionListenersAll(element) || [];
+    const exectionListeners = getExtensionExectionListeners(element) || [];
     console.log(exectionListeners);
 
     const bpmnFactory = injector.get('bpmnFactory'),
         commandStack = injector.get('commandStack');
 
     // 对list中的每个item进行构建
-    const items = exectionListeners.map((parameter, index) => {
+    const items = exectionListeners.map((exectionListener, index) => {
         // 按顺序给个id
         const id = element.id + '-exectionListener-' + index;
         // 构建item
         return {
             id,
-            label: parameter.get('event') + '---' + parameter.get('delegateExpression') || '',
+            label: exectionListener.get('event') + '---' + exectionListener.get('delegateExpression') || '',
             entries: ExtensionExectionListener({
                 idPrefix: id,
                 element,
-                parameter
+                exectionListener
             }),
             autoFocusEntry: id + '-el',
-            remove: removeFactory({ commandStack, element, parameter })
+            remove: removeFactory({ commandStack, element, exectionListener })
         };
     });
 
@@ -57,24 +57,29 @@ export default function ExtensionExectionListenerGroup({ element, injector }) {
 }
 
 // 去除item时执行的方法，先获取extensionElement，之后进行without处理，最后更新
-function removeFactory({ commandStack, element, parameter }) {
+function removeFactory({ commandStack, element, exectionListener }) {
     return function (event) {
         event.stopPropagation();
 
-        const exectionListener = getExtensionExectionListeners(element);
-    
-        if (!exectionListener) {
+        const exectionListeners = getExtensionExectionListeners(element);
+        
+        if (!exectionListeners) {
             return;
         }
 
+        const businessObject = getBusinessObject(element);
+
         // 利用without将当前item对应的信息剔除
-        const parameters = without(exectionListener.get('values'), parameter);
+        console.log(exectionListeners);
+        const exectionListenersAfter = without(exectionListeners, exectionListener);
+        console.log(exectionListenersAfter);
+        
         // 更新剔除后的信息
         commandStack.execute('element.updateModdleProperties', {
             element,
-            moddleElement: exectionListener,
+            moddleElement: businessObject.get('extensionElements'),
             properties: {
-                values: parameters
+                values: exectionListenersAfter
             }
         });
         
@@ -149,8 +154,10 @@ function getExtensionExectionListeners(element) {
     });
 }
 
+/*
 // 获取element的extensionElment下的所有ExectionListener的所有信息
 function getExtensionExectionListenersAll(element) {
     const values = getExtensionExectionListeners(element);
     return values;
 }
+*/
