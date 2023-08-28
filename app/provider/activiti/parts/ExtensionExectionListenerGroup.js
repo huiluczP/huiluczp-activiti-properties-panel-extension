@@ -126,7 +126,8 @@ function addFactory({ element, bpmnFactory, commandStack }) {
                 element,
                 moddleElement: extensionElements,
                 properties: {
-                    values: [...extensionElements.get('values'), newExectionListener]
+                    // 使新增的显示在下面
+                    values: [newExectionListener, ...extensionElements.get('values')]
                 }
             }
         });
