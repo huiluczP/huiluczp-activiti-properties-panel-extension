@@ -141,7 +141,7 @@ function addFactory({ element, bpmnFactory, commandStack }) {
     };
 }
 
-// 获取element的extensionElment下的所有ExectionListener
+// 获取element的extensionElment下的所有ExecutionListener
 function getExtensionExecutionListeners(element) {
     const businessObject = getBusinessObject(element);
     // 不存在就算了
