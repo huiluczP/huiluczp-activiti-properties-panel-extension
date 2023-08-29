@@ -1,4 +1,4 @@
-import { TextFieldEntry } from '@bpmn-io/properties-panel';
+import { TextFieldEntry, SelectEntry, isSelectEntryEdited } from '@bpmn-io/properties-panel';
 
 import { useService } from 'bpmn-js-properties-panel';
 
@@ -16,6 +16,7 @@ export default function ExtensionExecutionListener(props) {
             // idPrefix是外部传进来的element id，所以增加一个后缀来进行区分
             id: idPrefix + '-event',
             component: event,
+            isEdited: isSelectEntryEdited, // 使用下拉框决定event的值
             idPrefix,
             executionListener
         },
@@ -58,14 +59,24 @@ function event(props) {
         return executionListener.event;
     };
 
+    // 设置选项
+    const getOptions = () => {
+        return [
+            {label: 'start', value: 'start'},
+            {label: 'middle', value: 'middle'},
+            {label: 'end', value: 'end'},
+          ];
+    }
+
     // 也可使用html拼接
-    return TextFieldEntry({
+    return SelectEntry({
         element: executionListener,
         id: idPrefix + '-event',
         label: translate('event'),
-        getValue,
-        setValue,
-        debounce
+        getValue: getValue,
+        setValue: setValue,
+        getOptions: getOptions,
+        debounce: debounce
     });
 }
 
