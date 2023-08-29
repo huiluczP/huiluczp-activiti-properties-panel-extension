@@ -3,7 +3,7 @@ import {
 } from 'bpmn-js/lib/util/ModelUtil';
 
 import { without } from 'min-dash';
-import ExtensionExectionListener from './ExtensionExectionListener';
+import ExtensionExecutionListener from './ExtensionExecutionListener';
 
 import Ids from 'ids';
 
@@ -23,30 +23,30 @@ function createElement(elementType, properties, parent, factory) {
 }
 
 // 关键方法，构建listener list
-export default function ExtensionExectionListenerGroup({ element, injector }) {
+export default function ExtensionExecutionListenerGroup({ element, injector }) {
 
     // 防空
-    const exectionListeners = getExtensionExectionListeners(element) || [];
-    console.log(exectionListeners);
+    const executionListeners = getExtensionExecutionListeners(element) || [];
+    console.log(executionListeners);
 
     const bpmnFactory = injector.get('bpmnFactory'),
         commandStack = injector.get('commandStack');
 
     // 对list中的每个item进行构建
-    const items = exectionListeners.map((exectionListener, index) => {
+    const items = executionListeners.map((executionListener, index) => {
         // 按顺序给个id
-        const id = element.id + '-exectionListener-' + index;
+        const id = element.id + '-executionListener-' + index;
         // 构建item
         return {
             id,
-            label: exectionListener.get('event') + '---' + exectionListener.get('delegateExpression') || '',
-            entries: ExtensionExectionListener({
+            label: executionListener.get('event') + '---' + executionListener.get('delegateExpression') || '',
+            entries: ExtensionExecutionListener({
                 idPrefix: id,
                 element,
-                exectionListener
+                executionListener
             }),
             autoFocusEntry: id + '-el',
-            remove: removeFactory({ commandStack, element, exectionListener })
+            remove: removeFactory({ commandStack, element, executionListener })
         };
     });
 
@@ -57,29 +57,29 @@ export default function ExtensionExectionListenerGroup({ element, injector }) {
 }
 
 // 去除item时执行的方法，先获取extensionElement，之后进行without处理，最后更新
-function removeFactory({ commandStack, element, exectionListener }) {
+function removeFactory({ commandStack, element, executionListener }) {
     return function (event) {
         event.stopPropagation();
 
-        const exectionListeners = getExtensionExectionListeners(element);
+        const executionListeners = getExtensionExecutionListeners(element);
         
-        if (!exectionListeners) {
+        if (!executionListeners) {
             return;
         }
 
         const businessObject = getBusinessObject(element);
 
         // 利用without将当前item对应的信息剔除
-        console.log(exectionListeners);
-        const exectionListenersAfter = without(exectionListeners, exectionListener);
-        console.log(exectionListenersAfter);
-        
+        console.log(executionListeners);
+        const executionListenersAfter = without(executionListeners, executionListener);
+        console.log(executionListenersAfter);
+
         // 更新剔除后的信息
         commandStack.execute('element.updateModdleProperties', {
             element,
             moddleElement: businessObject.get('extensionElements'),
             properties: {
-                values: exectionListenersAfter
+                values: executionListenersAfter
             }
         });
         
@@ -118,8 +118,8 @@ function addFactory({ element, bpmnFactory, commandStack }) {
         }
 
         // 构建exectionListener
-        const newExectionListener = createElement('activiti:exectionListener', {
-            name: nextId('ExectionListener_'),
+        const newExecutionListener = createElement('activiti:executionListener', {
+            name: nextId('ExecutionListener_'),
             event: 'start', // 这边其实可以改成下拉框
             delegateExpression: ''
         }, extensionElements, bpmnFactory);
@@ -132,7 +132,7 @@ function addFactory({ element, bpmnFactory, commandStack }) {
                 moddleElement: extensionElements,
                 properties: {
                     // 使新增的显示在下面
-                    values: [newExectionListener, ...extensionElements.get('values')]
+                    values: [newExecutionListener, ...extensionElements.get('values')]
                 }
             }
         });
@@ -142,7 +142,7 @@ function addFactory({ element, bpmnFactory, commandStack }) {
 }
 
 // 获取element的extensionElment下的所有ExectionListener
-function getExtensionExectionListeners(element) {
+function getExtensionExecutionListeners(element) {
     const businessObject = getBusinessObject(element);
     // 不存在就算了
     if (!businessObject.extensionElements) {
@@ -150,7 +150,7 @@ function getExtensionExectionListeners(element) {
     }
     // 存在则使用filter找出所有的activiti:exectionListener
     return businessObject.extensionElements.values.filter(function (e) {
-        return e.$instanceOf("activiti:exectionListener");
+        return e.$instanceOf("activiti:executionListener");
     });
 }
 

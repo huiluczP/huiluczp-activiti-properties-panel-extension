@@ -3,12 +3,12 @@ import { TextFieldEntry } from '@bpmn-io/properties-panel';
 import { useService } from 'bpmn-js-properties-panel';
 
 // 构建list中的一层，包括event设置和delegateExpression设置
-export default function ExtensionExectionListener(props) {
+export default function ExtensionExecutionListener(props) {
 
     const {
         idPrefix,
         element,
-        exectionListener
+        executionListener
     } = props;
 
     const entries = [
@@ -17,13 +17,13 @@ export default function ExtensionExectionListener(props) {
             id: idPrefix + '-event',
             component: event,
             idPrefix,
-            exectionListener
+            executionListener
         },
         {
             id: idPrefix + '-delegateExpression',
             component: delegateExpression,
             idPrefix,
-            exectionListener
+            executionListener
         }
     ];
 
@@ -33,11 +33,11 @@ export default function ExtensionExectionListener(props) {
 // 设置event属性
 function event(props) {
 
-    // 要注意的是exectionListener，需要它来进行属性的修改 
+    // 要注意的是executionListener，需要它来进行属性的修改 
     const {
         idPrefix,
         element,
-        exectionListener
+        executionListener
     } = props;
 
     const commandStack = useService('commandStack');
@@ -47,20 +47,20 @@ function event(props) {
     const setValue = (value) => {
         commandStack.execute('element.updateModdleProperties', {
             element,
-            moddleElement: exectionListener,
+            moddleElement: executionListener,
             properties: {
                 event: value
             }
         });
     };
 
-    const getValue = (exectionListener) => {
-        return exectionListener.event;
+    const getValue = (executionListener) => {
+        return executionListener.event;
     };
 
     // 也可使用html拼接
     return TextFieldEntry({
-        element: exectionListener,
+        element: executionListener,
         id: idPrefix + '-event',
         label: translate('event'),
         getValue,
@@ -74,7 +74,7 @@ function delegateExpression(props) {
     const {
         idPrefix,
         element,
-        exectionListener
+        executionListener
     } = props;
 
     const commandStack = useService('commandStack');
@@ -84,7 +84,7 @@ function delegateExpression(props) {
     const setValue = (value) => {
         commandStack.execute('element.updateModdleProperties', {
             element,
-            moddleElement: exectionListener,
+            moddleElement: executionListener,
             properties: {
                 delegateExpression: value
             }
@@ -92,13 +92,13 @@ function delegateExpression(props) {
     };
 
     // exectionListener获取属性
-    const getValue = (exectionListener) => {
-        return exectionListener.delegateExpression;
+    const getValue = (executionListener) => {
+        return executionListener.delegateExpression;
     };
 
     // 也可使用html拼接
     return TextFieldEntry({
-        element: exectionListener,
+        element: executionListener,
         id: idPrefix + '-delegateExpression',
         label: translate('delegateExpression'),
         getValue,

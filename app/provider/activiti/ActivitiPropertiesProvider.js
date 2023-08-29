@@ -3,7 +3,7 @@ import DelegateExpression from './parts/DelegateExpression';
 import ExecutionListener from './parts/ExecutionListener';
 
 import { is } from 'bpmn-js/lib/util/ModelUtil';
-import ExtensionExectionListenerGroup from './parts/ExtensionExectionListenerGroup';
+import ExtensionExecutionListenerGroup from './parts/ExtensionExecutionListenerGroup';
 
 import { ListGroup } from '@bpmn-io/properties-panel';
 
@@ -68,7 +68,7 @@ function createExtensionExclusiveGateway(element, injector, translate){
     id: 'ExtensionExectionListener',
     label: translate('对应监听实现类设置'),
     component: ListGroup,
-    ...ExtensionExectionListenerGroup({ element, injector })
+    ...ExtensionExecutionListenerGroup({ element, injector })
   };
 
   return elGroup; 

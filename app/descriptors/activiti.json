@@ -34,7 +34,7 @@
         ]        
       },
       {
-        "name": "exectionListener",
+        "name": "executionListener",
         "superClass": [ "Element" ],
         "isMany": true,
         "properties": [
