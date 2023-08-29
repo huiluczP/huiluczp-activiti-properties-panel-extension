@@ -60,11 +60,15 @@ function event(props) {
     };
 
     // 设置选项
+    var optionsJson = require("../options/ExtensionExecutionListenerEventOption.json").option
+
     const getOptions = () => {
         return [
-            {label: 'start', value: 'start'},
-            {label: 'middle', value: 'middle'},
-            {label: 'end', value: 'end'},
+            { label: 'default', value: 'default' },
+            ...optionsJson.map( temple => ({
+              label: temple.label,
+              value: temple.value
+            }))
           ];
     }
 
